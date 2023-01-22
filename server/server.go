@@ -60,7 +60,7 @@ func handleConnection(con net.Conn, id string) {
 
 		switch err {
 		case nil:
-			// clientRequest := strings.TrimSpace(clientRequest)
+
 			clientRequest := strings.Split(clientRequest, " ")
 			if clientRequest[0] != id {
 				con.Write([]byte("Wrong ID, please re sent your ID \n"))

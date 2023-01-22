@@ -22,7 +22,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 
-	id := uuid.New()
+	id := uuid.New().String()
 
 	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
@@ -38,7 +38,8 @@ func main() {
 			log.Println(err)
 			continue
 		}
-		go handleConnection(con, id.String())
+
+		go handleConnection(con, id)
 	}
 }
 
@@ -46,7 +47,9 @@ func handleConnection(con net.Conn, id string) {
 	defer con.Close()
 
 	clientReader := bufio.NewReader(con)
+	con.Write([]byte("Your id is " + id + "\n"))
 	log.Println("The client: " + id + " sucessfully connected to the server")
+
 	for {
 		clientRequest, err := clientReader.ReadString('\n')
 

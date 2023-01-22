@@ -26,10 +26,26 @@ func main() {
 
 	defer con.Close()
 
-	clientReader := bufio.NewReader(os.Stdin)
 	serverReader := bufio.NewReader(con)
 
+	clientReader := bufio.NewReader(os.Stdin)
+
 	for {
+
+		// Waiting for the server response
+		serverResponse, err := serverReader.ReadString('\n')
+
+		switch err {
+		case nil:
+			log.Println(strings.TrimSpace(serverResponse))
+		case io.EOF:
+			log.Println("server closed the connection")
+			return
+		default:
+			log.Printf("server error: %v\n", err)
+			return
+		}
+
 		clientRequest, err := clientReader.ReadString('\n')
 
 		switch err {
@@ -46,19 +62,6 @@ func main() {
 			return
 		}
 
-		// Waiting for the server response
-		serverResponse, err := serverReader.ReadString('\n')
-
-		switch err {
-		case nil:
-			log.Println(strings.TrimSpace(serverResponse))
-		case io.EOF:
-			log.Println("server closed the connection")
-			return
-		default:
-			log.Printf("server error: %v\n", err)
-			return
-		}
 	}
 
 }

@@ -55,14 +55,19 @@ func handleConnection(con net.Conn, id string) {
 
 		switch err {
 		case nil:
-			clientRequest := strings.TrimSpace(clientRequest)
+			// clientRequest := strings.TrimSpace(clientRequest)
+			clientRequest := strings.Split(clientRequest, " ")
+			if clientRequest[0] != id {
+				con.Write([]byte("Wrong ID, please re sent your ID \n"))
+				break
+			}
 
-			if clientRequest == ":QUIT" {
+			if clientRequest[1] == ":QUIT" {
 				log.Println("client requested server to close the connection so closing")
 				return
 			} else {
 				log.Println("The client " + id + " sent the message: ")
-				log.Println(clientRequest)
+				log.Println(clientRequest[1])
 			}
 		case io.EOF:
 			log.Println("client closed the connection by terminating the process")

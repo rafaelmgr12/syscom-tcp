@@ -61,6 +61,18 @@ func main() {
 			log.Printf("client error: %v\n", err)
 			return
 		}
+		serverResponse, err = serverReader.ReadString('\n')
+
+		switch err {
+		case nil:
+			log.Println(strings.TrimSpace(serverResponse))
+		case io.EOF:
+			log.Println("server closed the connection")
+			return
+		default:
+			log.Printf("server error: %v\n", err)
+			return
+		}
 
 	}
 

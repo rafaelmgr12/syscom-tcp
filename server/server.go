@@ -72,6 +72,11 @@ func handleConnection(con net.Conn, id string) {
 				listClients(con)
 			}
 
+			if clientRequest[1] == "RELAY" {
+				log.Println("client requested server to relay message to all connected clients")
+				relayMessage(clientRequest[2])
+			}
+
 			if clientRequest[1] == "QUIT" {
 				log.Println("client requested server to close the connection so closing")
 				return
@@ -91,6 +96,12 @@ func handleConnection(con net.Conn, id string) {
 		if _, err = con.Write([]byte("\nRecieve the Request\n")); err != nil {
 			log.Printf("failed to respond to client: %v\n", err)
 		}
+	}
+}
+
+func relayMessage(body string) {
+	for _, conn := range clients {
+		conn.Write([]byte(body))
 	}
 }
 
